@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "253849820706",
+    "project_id": "elderlyhelper-ios",
+    "storage_bucket": "elderlyhelper-ios.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253849820706:android:fe2442124bb1d1533af47b",
+        "android_client_info": {
+          "package_name": "com.example.homework2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "253849820706-untg5ktq1cso20iefhheme7clejiqvg7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAciiL09S8_GlADOgMrgj2G2a2KFNqWrrM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "253849820706-untg5ktq1cso20iefhheme7clejiqvg7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "253849820706-5njga3gcr0s3307efrvoingm2bgkma49.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.HristijanStojchevski.Homework1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
