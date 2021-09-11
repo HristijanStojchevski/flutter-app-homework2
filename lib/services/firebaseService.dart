@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:homework2/model/activity.dart';
 import 'package:homework2/model/user.dart';
 
 class AuthService {
@@ -35,7 +36,6 @@ class AuthService {
       User? firUser = result.user;
       // TODO Let the app know which user is logged in, get user id and connect it with user at firestore
       // Get everything for that user. Save the user in local storage
-
       return _userFromFirebaseUser(firUser);
     } catch (e) {
       print(e.toString());
@@ -49,11 +49,11 @@ class AuthService {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       User? firUser = result.user;
-      // Create user in Firebase Storage
+      // TODO ADD FIELDS FOR USER   firUserDoc.set  deviceToken , postedJobs, enrolledJobs, name (email), surname (if provided later), username (email)
+      Map<String, dynamic> userData = {'name': email, 'surname': 'unknown', 'username': email};
 
-      DocumentReference firUserDoc = _userCollection.doc(firUser!.uid);
-      // TODO ADD FIELDS FOR USER   firUserDoc.set  deviceToken , createdJobs, enrolledJobs, name (email), surname (if provided later), username (email)
-      await updateUserData(firUserDoc.id, email, 'unknown');
+      // Creates user in Firebase Storage if there is none existing with the unique uid
+      await setUserData(userData);
       return _userFromFirebaseUser(firUser);
     } catch (e) {
       print(e.toString());
@@ -62,7 +62,6 @@ class AuthService {
   }
 
 
-  // TODO sign out
   Future signOut() async {
     try{
       return await _auth.signOut();
@@ -72,12 +71,14 @@ class AuthService {
     }
   }
 
-  Future updateUserData(String uid, String name, String surname) async {
-    return await _userCollection.doc(uid).set({
-      'name': name,
-      'surname': surname
-    });
+  Future updateUserData(Map<String, dynamic> userData) async {
+    return await _userCollection.doc(userData['uid']).update(userData);
   }
+
+  Future setUserData(Map<String, dynamic> userData) async {
+    return await _userCollection.doc(userData['uid']).set(userData);
+  }
+
 
 }
 
@@ -86,6 +87,6 @@ class FirebaseService {
   // collection Ref
   final CollectionReference jobCollection = FirebaseFirestore.instance.collection('jobCategories');
 
-
-
+  // Get all jobs
+  // TODO List<Activity>
 }

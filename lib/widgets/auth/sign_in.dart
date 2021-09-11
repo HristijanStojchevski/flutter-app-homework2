@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/constants.dart';
 import 'package:homework2/shared/loading.dart';
-import 'package:homework2/widgets/auth/register.dart';
 
 class SignIn extends StatefulWidget {
 
