@@ -3,10 +3,8 @@ import 'package:homework2/model/activity.dart';
 
 class ActivityCard extends StatelessWidget {
   final Activity activity;
-
-  ActivityCard({required this.activity});
-
-
+  final bool isFinished;
+  ActivityCard({required this.activity, this.isFinished = false});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,7 @@ class ActivityCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    child: Row(
+                    child: isFinished ? null : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(activity.isNearby ? 'NEARBY' : '', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
@@ -54,7 +52,7 @@ class ActivityCard extends StatelessWidget {
               children: [
                 Icon(Icons.image, size: 60,),
                 // TODO convert description to multiple lines
-                Container(width: 290, child: Text(activity.description.length < 48 ? activity.description : 'Multiple row text sent to a function that returns \n a new text split on every 48 char with new line')),
+                Container(width: 290, child: Text(activity.description, maxLines: 3,overflow: TextOverflow.fade,)),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0,0,10,0),
                   child: Icon(Icons.play_arrow, size: 30,),
@@ -65,12 +63,24 @@ class ActivityCard extends StatelessWidget {
               alignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () {  },
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/activity', arguments: {
+                      // 'activityRef': activity.ref,
+                      'activity': activity,
+                    });
+                  },
                   child: Text('FULL POST', style: TextStyle(color: Colors.white, fontSize: 16),),),
                 MaterialButton(
-                  color: Colors.blue[600],
-                  onPressed: () {  },
-                  child: Text('ENROLL', style: TextStyle(color: Colors.white, fontSize: 16),),
+                  color: isFinished ? Colors.redAccent : Colors.blue[600],
+                  onPressed: () {
+                    if(isFinished){
+                      //TODO delete
+                    }
+                    else{
+                      //TODO enroll
+                    }
+                  },
+                  child: Text(isFinished ? 'DELETE' : 'ENROLL', style: TextStyle(color: Colors.white, fontSize: 16),),
                 ),
               ],
             )

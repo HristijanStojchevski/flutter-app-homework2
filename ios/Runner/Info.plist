@@ -41,5 +41,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow camera usage to take photos for your activity</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow access so you could choose photos from your device</string>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>You need to allow this to record audio message for your activity</string>
 </dict>
 </plist>

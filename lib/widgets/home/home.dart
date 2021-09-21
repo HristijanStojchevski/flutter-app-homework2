@@ -1,6 +1,8 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homework2/model/activity.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/activityCard.dart';
 import 'package:homework2/widgets/pages/explorer/explorer.dart';
@@ -14,21 +16,44 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
-  int currentTab = 0;
-  final List<Widget> screens = [
-    Explorer(),
-    MapSearch(),
-    Dashboard()
+
+  // TODO : On update on activities offer a refresh on the page
+  List<Activity> activities = <Activity>[
+    Activity("title", 'description', 'helper', false, false, 'category',GeoPoint(41.99585,21.43144), 'creator'),
+    Activity("Main activity", 'We need a huge description in order to satisfy the needs of the UI.\n Present this to the costumer in a nice and honorable fashion. \n New line behavior and a lot of extra unnecessary text that no one will read.', 'helper1', false, false, 'Construction',GeoPoint(41.99514,21.43221), 'creator'),
+    Activity("title2", 'description', 'helper2', false, false, 'category',GeoPoint(41.99684,21.42367), 'creator1'),
+    Activity("title3", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator2'),
+    Activity("title4", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator2'),
+    Activity("title5", 'description', 'helper3', false, false, 'category',GeoPoint(0,0), 'creator2'),
+    Activity("title6", 'description', 'helper4', false, false, 'category',GeoPoint(0,0), 'creator3'),
+    Activity("title7", 'description', 'helper5', false, false, 'category',GeoPoint(0,0), 'creator4'),
+    Activity("title8", 'description', 'helper6', false, false, 'category',GeoPoint(0,0), 'creator4'),
+    Activity("title8", 'description', 'helper6', false, false, 'category',GeoPoint(0,0), 'creator4'),
   ];
+
+  int currentTab = 0;
 
   final List<String> screenNames = [ 'Explorer', 'Map Search', 'Dashboard'];
 
   final PageStorageBucket bucket = PageStorageBucket();
-  Widget currentScreen = Explorer();
+
+  List<Widget> screens = [];
+  late Widget currentScreen;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    currentScreen = Explorer(activities: activities,);
+  }
 
   @override
   Widget build(BuildContext context) {
 
+    screens = [
+      Explorer(activities: activities,),
+      MapSearch(activities: activities,),
+      Dashboard()
+    ];
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -59,6 +84,10 @@ class _HomeState extends State<Home> {
             child: Icon(Icons.add, size: 35,),
             onPressed: () {
             // TODO open new item form
+              Navigator.pushNamed(context, '/newJob', arguments: {
+                'createNewJob': true,
+                'activity': null
+              });
             }
           ) :
           FloatingActionButton(

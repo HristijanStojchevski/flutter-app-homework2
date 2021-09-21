@@ -1,0 +1,3 @@
+class UtilityFunctions {
+
+}

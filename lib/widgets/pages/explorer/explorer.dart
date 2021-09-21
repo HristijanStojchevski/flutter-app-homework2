@@ -6,6 +6,10 @@ import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/activityCard.dart';
 
 class Explorer extends StatefulWidget {
+  List<Activity> activities;
+
+  Explorer({required this.activities});
+
   @override
   _ExplorerState createState() => _ExplorerState();
 }
@@ -13,26 +17,21 @@ class Explorer extends StatefulWidget {
 class _ExplorerState extends State<Explorer> {
 
   // TODO : On update on activities offer a refresh on the page
+  List<Activity> activities = <Activity>[];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    activities = widget.activities;
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    List<Activity> activities = <Activity>[
-      Activity("title", 'description', 'helper', false, false, 'category',GeoPoint(0,0), 'creator'),
-      Activity("title1", 'description', 'helper1', false, false, 'category',GeoPoint(0,0), 'creator'),
-      Activity("title2", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator1'),
-      Activity("title3", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator2'),
-      Activity("title4", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator2'),
-      Activity("title5", 'description', 'helper3', false, false, 'category',GeoPoint(0,0), 'creator2'),
-      Activity("title6", 'description', 'helper4', false, false, 'category',GeoPoint(0,0), 'creator3'),
-      Activity("title7", 'description', 'helper5', false, false, 'category',GeoPoint(0,0), 'creator4'),
-      Activity("title8", 'description', 'helper6', false, false, 'category',GeoPoint(0,0), 'creator4'),
-      Activity("title8", 'description', 'helper6', false, false, 'category',GeoPoint(0,0), 'creator4'),
-    ];
-
     activities[0].isNearby = true;
     activities[0].distance = 570.43;
     activities[0].description = 'And what a description this is !';
+
 
     return Column(
       children: [
