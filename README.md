@@ -1,16 +1,32 @@
 # homework2
 
-A new Flutter project.
+A Flutter project for the course Mobile Applications on the Faculty of Computer Science and Engineering.
 
-## Getting Started
+## Requirements
 
-This project is a starting point for a Flutter application.
+- Да користи мапи и локациски сервиси 
 
-A few resources to get you started if this is your first Flutter project:
+  -[lib/widgets/pages/map/map.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/widgets/pages/map/map.dart#L63) line:63
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- Да користи нотификации 
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+  -[lib/services/firebaseService.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/services/firebaseService.dart#L106) line:106
+  
+- Да користи камера и уште најмалку еден сензор
+
+  -[lib/widgets/activityManagement/contentFormStep.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/widgets/activityManagement/contentFormStep.dart#L24)  line:24
+  
+  -[lib/services/mediaService.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/services/mediaService.dart#L19) line:19
+  
+- Да повикува надворешен сервис и да прикажува резултат 
+
+  -[lib/services/firebaseService.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/services/firebaseService.dart#L39) line:39
+  
+- Да има повеќе од едно view 
+
+  -[lib/widgets/wrapper.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/widgets/wrapper.dart#L14) line:14
+  
+- Да памти состојба на апликацијата и кориснички податоци 
+
+  -[lib/widgets/auth/sign_in.dart](https://github.com/HristijanStojchevski/flutter-app-homework2/blob/master/lib/widgets/auth/sign_in.dart#L34) line:34
+  
