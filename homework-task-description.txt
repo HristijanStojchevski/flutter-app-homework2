@@ -1,0 +1,8 @@
+Да користи мапи и локациски сервиси  - lib/widgets/pages/map/map.dart line:63
+Да користи нотификации - lib/services/firebaseService.dart line:106
+Да користи камера и уште најмалку еден сензор
+- lib/widgets/activityManagement/contentFormStep.dart  line:24
+- lib/services/mediaService.dart line:19
+Да повикува надворешен сервис и да прикажува резултат - lib/services/firebaseService.dart line:36
+Да има повеќе од едено view - lib/widgets/wrapper.dart line:14
+Да памти состојба на апликацијата и кориснички податоци - lib/widgets/auth/sign_in.dart line:34

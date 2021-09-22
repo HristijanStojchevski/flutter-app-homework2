@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homework2/model/user.dart';
-import 'package:homework2/widgets/explorer/explorer.dart';
 import 'package:homework2/widgets/auth/authenticate.dart';
+import 'package:homework2/widgets/home/home.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {
@@ -11,6 +11,6 @@ class Wrapper extends StatelessWidget {
     final appUser = Provider.of<AppUser?>(context);
     // print(appUser);
 
-    return appUser != null ? Explorer() : Authenticate() ;
+    return appUser != null ? Home() : Authenticate() ;
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/constants.dart';
 import 'package:homework2/shared/loading.dart';
-import 'package:homework2/widgets/auth/register.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignIn extends StatefulWidget {
 
@@ -26,8 +26,40 @@ class _SignInState extends State<SignIn> {
   String error = '';
   bool isLoading = false;
 
+  Future<void> checkUserAuth() async {
+    setState(() {
+      isLoading = true;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    String? savedEmail = prefs.getString('userEmail');
+    String? savedPass = prefs.getString('encryptedPass');
+    if(savedEmail == null){
+      return;
+    }
+    if(savedPass == null){
+      return;
+    }
+    email = savedEmail;
+    // TODO decrypt pass
+    pass = savedPass;
+    dynamic result = await _auth.signInWithEmailAndPassword(email, pass);
+    if (result == null){
+      error = 'There was a problem with signing you in automatically.\n Please type your email and pass again.';
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkUserAuth();
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return isLoading ? LoadingScreen() : Scaffold(
       backgroundColor: Colors.lightBlue[200],
       appBar: AppBar(
@@ -97,8 +129,10 @@ class _SignInState extends State<SignIn> {
                         isLoading = false;
                        });
                     }
-                    else {
-                       setState(() => error = '');
+                    else{
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('userEmail', email);
+                      await prefs.setString('encryptedPass', pass);
                     }
                   }
                 },

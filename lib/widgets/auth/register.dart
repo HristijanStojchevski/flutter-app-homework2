@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/constants.dart';
 import 'package:homework2/shared/loading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
 
@@ -103,6 +104,11 @@ class _RegisterState extends State<Register> {
                             error = 'There was an error registering you with that email.';
                             isLoading = false;
                           });
+                        }
+                        else{
+                          final prefs = await SharedPreferences.getInstance();
+                          await prefs.setString('userEmail', email);
+                          await prefs.setString('encryptedPass', pass);
                         }
                       }
                     },
