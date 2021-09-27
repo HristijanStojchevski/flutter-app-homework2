@@ -3,11 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homework2/model/activity.dart';
+import 'package:homework2/model/user.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/activityCard.dart';
+import 'package:homework2/widgets/activityManagement/manageActivity.dart';
 import 'package:homework2/widgets/pages/explorer/explorer.dart';
 import 'package:homework2/widgets/pages/map/map.dart';
 import 'package:homework2/widgets/pages/userDashboard/dashboard.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,45 +21,52 @@ class _HomeState extends State<Home> {
   final AuthService _auth = AuthService();
 
   // TODO : On update on activities offer a refresh on the page
-  List<Activity> activities = <Activity>[
-    Activity("title", 'description', 'helper', false, false, 'category',GeoPoint(41.99585,21.43144), 'creator'),
-    Activity("Main activity", 'We need a huge description in order to satisfy the needs of the UI.\n Present this to the costumer in a nice and honorable fashion. \n New line behavior and a lot of extra unnecessary text that no one will read.', 'helper1', false, false, 'Construction',GeoPoint(41.99514,21.43221), 'creator'),
-    Activity("title2", 'description', 'helper2', false, false, 'category',GeoPoint(41.99684,21.42367), 'creator1'),
-    Activity("title3", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator2'),
-    Activity("title4", 'description', 'helper2', false, false, 'category',GeoPoint(0,0), 'creator2'),
-    Activity("title5", 'description', 'helper3', false, false, 'category',GeoPoint(0,0), 'creator2'),
-    Activity("title6", 'description', 'helper4', false, false, 'category',GeoPoint(0,0), 'creator3'),
-    Activity("title7", 'description', 'helper5', false, false, 'category',GeoPoint(0,0), 'creator4'),
-    Activity("title8", 'description', 'helper6', false, false, 'category',GeoPoint(0,0), 'creator4'),
-    Activity("title8", 'description', 'helper6', false, false, 'category',GeoPoint(0,0), 'creator4'),
-  ];
-
+  List<Activity> localActivities = [];
   int currentTab = 0;
-
+  bool updateActivities = true;
   final List<String> screenNames = [ 'Explorer', 'Map Search', 'Dashboard'];
 
   final PageStorageBucket bucket = PageStorageBucket();
-
+  
   List<Widget> screens = [];
   late Widget currentScreen;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    currentScreen = Explorer(activities: activities,);
+    currentScreen = Explorer(activities: localActivities,);
+    screens = [
+      Explorer(activities: localActivities,),
+      MapSearch(activities: localActivities,),
+      Dashboard()
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
-
-    screens = [
-      Explorer(activities: activities,),
-      MapSearch(activities: activities,),
-      Dashboard()
-    ];
     final screenWidth = MediaQuery.of(context).size.width;
+    final activities = Provider.of<List<Activity>>(context);
 
+    if(!ListEquality().equals(activities, localActivities)){
+      if(updateActivities){
+        setState(() {
+          screens = [
+            Explorer(activities: activities,),
+            MapSearch(activities: activities,),
+            Dashboard()
+          ];
+          localActivities = activities;
+          currentScreen = screens[currentTab];
+          updateActivities = false;
+        });
+      }
+      else {
+        // show update snackbar
+      }
+    }
     return Scaffold(
+      // TODO enable this but find a solution for the MAP directions
+      // extendBody: true,
       appBar: AppBar(
         title: Text(screenNames[currentTab]),
         backgroundColor: Colors.lightBlue[400],
@@ -76,18 +86,21 @@ class _HomeState extends State<Home> {
         bucket: bucket,
       ),
       floatingActionButton: Container(
+          color: Colors.transparent,
           height: 75.0,
           width: 75.0,
-          child: currentTab == 0 ?
+          child: currentTab == 0 && appUser.role == Role.Activist ?
           FloatingActionButton(
             elevation: 5,
             child: Icon(Icons.add, size: 35,),
             onPressed: () {
             // TODO open new item form
-              Navigator.pushNamed(context, '/newJob', arguments: {
-                'createNewJob': true,
-                'activity': null
-              });
+              Activity activity = Activity(title: 'title', description: 'description', location: GeoPoint(0,0), category: '', networkPhotos: [], audioRecording: '');
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityManagement(updateActivity: (){}, isNew: true,activity: activity)),);
+              // Navigator.pushNamed(context, '/newJob', arguments: {
+              //   'createNewJob': true,
+              //   'activity': null
+              // });
             }
           ) :
           FloatingActionButton(

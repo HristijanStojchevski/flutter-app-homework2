@@ -1,24 +1,44 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Activity {
+  String? activityId;
   String title = "";
   String description = "";
-  final GeoPoint location;
-  final String creator;
-  String helper = "";
-  bool enrolled = false;
-  bool finished = false;
+  GeoPoint location = GeoPoint(0, 0);
+  DocumentReference? creator;
   String category = "";
+  List<File> photos = [];
+  List<String> networkPhotos = [];
+  String audioRecording = '';
+  String audioSrc = '';
   double distance = 0.0;
   bool isNearby = false;
 
-  Activity(String title,String description, String helper, bool enrolled, bool finished, String category, this.location, this.creator){
-    this.title = title;
-    this.description = description;
-    this.helper = helper;
-    this.enrolled = enrolled;
-    this.finished = finished;
-    this.category = category;
-  }
 
+  Activity(
+      {this.activityId,
+      required this.title,
+      required this.description,
+      required this.location,
+      this.creator,
+      required this.category,
+      required this.networkPhotos,
+      required this.audioRecording});
+
+  Activity.from(Activity activity){
+    if(activity.activityId != null) this.activityId = activity.activityId;
+    this.title = activity.title;
+    this.description = activity.description;
+    this.location = activity.location;
+    this.creator = activity.creator;
+    this.category = activity.category;
+    this.photos = activity.photos;
+    this.networkPhotos = activity.networkPhotos;
+    this.audioRecording = activity.audioRecording;
+    this.audioSrc = activity.audioSrc;
+    this.distance = activity.distance;
+    this.isNearby = activity.isNearby;
+  }
 }

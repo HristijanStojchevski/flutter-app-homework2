@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homework2/model/user.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/constants.dart';
 import 'package:homework2/shared/loading.dart';
@@ -6,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SignIn extends StatefulWidget {
 
+  final Function authComplete;
   final Function showRegisterScreen;
-  SignIn({ required this.showRegisterScreen});
+  SignIn({ required this.showRegisterScreen, required this.authComplete});
 
   @override
   _SignInState createState() => _SignInState();
@@ -27,9 +29,6 @@ class _SignInState extends State<SignIn> {
   bool isLoading = false;
 
   Future<void> checkUserAuth() async {
-    setState(() {
-      isLoading = true;
-    });
     final prefs = await SharedPreferences.getInstance();
     String? savedEmail = prefs.getString('userEmail');
     String? savedPass = prefs.getString('encryptedPass');
@@ -39,16 +38,20 @@ class _SignInState extends State<SignIn> {
     if(savedPass == null){
       return;
     }
+    setState(() {
+      isLoading = true;
+    });
     email = savedEmail;
     // TODO decrypt pass
     pass = savedPass;
     dynamic result = await _auth.signInWithEmailAndPassword(email, pass);
     if (result == null){
       error = 'There was a problem with signing you in automatically.\n Please type your email and pass again.';
-      setState(() {
-        isLoading = false;
-      });
+    } else {
     }
+    setState(() {
+      isLoading = false;
+    });
   }
   @override
   void initState() {
@@ -56,7 +59,6 @@ class _SignInState extends State<SignIn> {
     super.initState();
     checkUserAuth();
   }
-
   @override
   Widget build(BuildContext context) {
 
@@ -122,14 +124,15 @@ class _SignInState extends State<SignIn> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()){
                     setState(() => isLoading = true);
-                    dynamic result = await _auth.signInWithEmailAndPassword(email, pass);
-                    if (result == null){
+                    AppUser? loggedInUser = await _auth.signInWithEmailAndPassword(email, pass);
+                    if (loggedInUser == null){
                        setState(() {
                         error = 'There was a problem with signing you in.';
                         isLoading = false;
                        });
                     }
                     else{
+                      widget.authComplete(_auth);
                       final prefs = await SharedPreferences.getInstance();
                       await prefs.setString('userEmail', email);
                       await prefs.setString('encryptedPass', pass);

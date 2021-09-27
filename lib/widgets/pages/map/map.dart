@@ -5,7 +5,7 @@ import 'package:homework2/services/firebaseService.dart';
 import 'package:location/location.dart';
 
 class MapSearch extends StatefulWidget {
-  List<Activity> activities;
+  final List<Activity> activities;
 
   MapSearch({required this.activities});
 

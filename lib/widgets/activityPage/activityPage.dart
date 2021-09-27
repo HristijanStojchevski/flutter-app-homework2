@@ -1,15 +1,80 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homework2/model/activity.dart';
-import 'package:homework2/shared/utilities.dart';
+import 'package:homework2/services/firebaseService.dart';
+import 'package:homework2/services/mediaService.dart';
+import 'package:homework2/widgets/activityManagement/manageActivity.dart';
+import 'package:path_provider/path_provider.dart';
 
-class ActivityPage extends StatelessWidget {
+class ActivityPage extends StatefulWidget {
+  @override
+  _ActivityPageState createState() => _ActivityPageState();
+}
+
+class _ActivityPageState extends State<ActivityPage> {
+  late Activity activity;
+  bool firstInit = true;
+  bool isEditable = false;
+  FirebaseService firebaseService = FirebaseService();
+  void refreshPage() async{
+    Activity? refreshedActivity = await firebaseService.loadActivity(activity.activityId);
+    if(refreshedActivity != null) setState(() => activity = refreshedActivity);
+  }
+
+  void saveAudioFromNetwork() async {
+    Directory docDirectory = await getApplicationDocumentsDirectory();
+    pathToSaveAudio = '${docDirectory.path}/temp_audio.aac';
+    final file = File(pathToSaveAudio);
+    Reference audioRef = FirebaseStorage.instance.refFromURL(activity.audioRecording);
+    await audioRef.writeToFile(file);
+  }
+
+  void deleteOldAudioFile() async {
+    Directory docDirectory = await getApplicationDocumentsDirectory();
+    pathToSaveAudio = '${docDirectory.path}/temp_audio.aac';
+    final file = File(pathToSaveAudio);
+    if(await file.exists()) {
+      await file.delete();
+    }
+  }
+
+  final MediaService mediaService = MediaService();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    mediaService.init();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    mediaService.dispose();
+    deleteOldAudioFile();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    Map<String, dynamic> data = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    Activity activity = data["activity"];
-    bool isEditable = data['isEditable'] == null ? false : data['isEditable'];
+    bool isPlaying = mediaService.isPlaying;
+    if( firstInit) {
+      Map<String, dynamic> data = ModalRoute
+          .of(context)!
+          .settings
+          .arguments as Map<String, dynamic>;
+      activity = data["activity"];
+      isEditable = data['isEditable'] == null ? false : data['isEditable'];
+      firstInit = false;
+      if(activity.audioRecording.isNotEmpty){
+        saveAudioFromNetwork();
+      }
+      setState(() => {});
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(activity.title),
@@ -20,10 +85,12 @@ class ActivityPage extends StatelessWidget {
             icon: Icon(Icons.edit, size: 30, color: Colors.white,),
             onPressed: () async {
               // TODO redirect to edit page
-              Navigator.pushNamed(context, '/newJob', arguments: {
-                'createNewJob': false,
-                'activity': activity
-              });
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ActivityManagement(updateActivity: refreshPage, isNew: false,activity: activity)),);
+              // Navigator.pushNamed(context, '/newJob', arguments: {
+              //   'createNewJob': false,
+              //   'activity': activity,
+              //   'refreshActivityPage': refreshPage
+              // });
             },
             label: Text(''),
           )
@@ -35,7 +102,7 @@ class ActivityPage extends StatelessWidget {
           // Image gallery swipe able
           Container(
             height: 180,
-            color: Colors.blue[200],
+            color: Colors.grey[400],
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -45,7 +112,7 @@ class ActivityPage extends StatelessWidget {
                 // Container(width: 291, height: 180, child: Icon(Icons.image, size: 200,),),
                 // // right control,
                 // Container(width: 60, height: 180, color: Colors.grey[400], child: Icon(Icons.arrow_right),)
-                Container(height: 180, child: Icon(Icons.image, size: 200,),),
+                Container(width: 400,height: 180, child: activity.networkPhotos.isNotEmpty ? Image.network(activity.networkPhotos.last) : Icon(Icons.image_not_supported, size: 60,)),
               ],
             ),
           ),
@@ -61,10 +128,23 @@ class ActivityPage extends StatelessWidget {
                   child: Text('Description', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
                 ),
                 SizedBox(width: 100,),
-                MaterialButton(elevation: 6, shape: CircleBorder(), color: Colors.lightBlue[400], onPressed: () {
+                MaterialButton(elevation: 6, shape: CircleBorder(), color: Colors.lightBlue[400], onPressed: () async {
                   // TODO play audio
+                  if(isPlaying){
+                    // stop playing
+                    await mediaService.stopAudio();
+                  }
+                  else{
+                    // start playing
+                    if (activity.audioRecording.isNotEmpty) {
+                      await mediaService.playAudio(() {
+                        setState(() {});
+                      });
+                    }
+                  }
+                  setState(() => {});
                   },
-                  child: Icon(Icons.play_circle_outline, size: 50, color: Colors.white,),
+                  child: Icon(isPlaying ? Icons.stop_circle_outlined : Icons.play_circle_outline, size: 50, color: Colors.white,),
                 ),
 
               ],),
@@ -78,7 +158,7 @@ class ActivityPage extends StatelessWidget {
             ],),
           ),
           // Enroll button with pop up confirm (if more than 1min than Snack bar)
-          isEditable || !activity.enrolled ? MaterialButton( // TODO one more condition. IF activity.creatorRef and auth logged in user ref are same then don't show the button
+          isEditable ? MaterialButton( // TODO one more condition. IF activity.creatorRef and auth logged in user ref are same then don't show the button
             elevation: 10,
             color: Colors.lightBlue[400],
             onPressed: (){

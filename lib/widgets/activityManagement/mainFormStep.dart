@@ -11,14 +11,22 @@ class MainStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO change to Maintenance here and firebase and Swift
     List<String> categories = [
-      "Cleaning",
-      "Construction",
-      "Gardening",
-      "Maintainance", //TODO change to Maintenance here and firebase and Swift
-      "Repairs",
-      "Shopping",
-      "quickFix"
+      "Snowboarding",
+      "Kitesurfing",
+      "Leisure",
+      "Skiing",
+      "Running",
+      "Swimming",
+      "Sunbathing",
+      "Vacation spot",
+      "Cycling",
+      "Wakeboarding",
+      "Waterskiing",
+      "Scubadiving",
+      "Rollerblading",
+      "Windsurfing"
     ];
 
     if(!categories.contains(category)){

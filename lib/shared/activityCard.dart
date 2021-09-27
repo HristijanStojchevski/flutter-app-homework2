@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:homework2/model/activity.dart';
+import 'package:homework2/services/firebaseService.dart';
 
 class ActivityCard extends StatelessWidget {
   final Activity activity;
   final bool isFinished;
-  ActivityCard({required this.activity, this.isFinished = false});
-
+  final Function refreshPage;
+  ActivityCard({required this.activity, this.isFinished = false,required this.refreshPage});
+  final firebaseService = FirebaseService();
   @override
   Widget build(BuildContext context) {
+    final deleteErr = SnackBar(content: Text('There was an error with the deletion of this post! TRY AGAIN', style: TextStyle(fontSize: 14),), backgroundColor: Colors.redAccent, duration: Duration(seconds: 5),);
+    final deleteSnackBar = SnackBar(content: Text('Are you sure you want to delete this post ?!', style: TextStyle(fontSize: 16)), action: SnackBarAction(textColor: Colors.lightBlueAccent,label: 'DELETE', onPressed: () async{
+      bool delSuc = await firebaseService.deleteActivity(activity.activityId);
+      if(!delSuc){
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(deleteErr);
+      }
+      else {
+        refreshPage();
+      }
+    },), backgroundColor: Colors.redAccent, duration: Duration(seconds: 10),);
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Container(
@@ -75,12 +88,14 @@ class ActivityCard extends StatelessWidget {
                   onPressed: () {
                     if(isFinished){
                       //TODO delete
+                      ScaffoldMessenger.of(context).clearSnackBars();
+                      ScaffoldMessenger.of(context).showSnackBar(deleteSnackBar);
                     }
                     else{
                       //TODO enroll
                     }
                   },
-                  child: Text(isFinished ? 'DELETE' : 'ENROLL', style: TextStyle(color: Colors.white, fontSize: 16),),
+                  child: Text(isFinished ? 'DELETE' : 'SAVE', style: TextStyle(color: Colors.white, fontSize: 16),),
                 ),
               ],
             )

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homework2/model/user.dart';
 import 'package:homework2/services/firebaseService.dart';
 import 'package:homework2/shared/constants.dart';
 import 'package:homework2/shared/loading.dart';
@@ -6,8 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Register extends StatefulWidget {
 
+  final Function authComplete;
   final Function showSignInScreen;
-  Register({ required this.showSignInScreen });
+  Register({ required this.showSignInScreen, required this.authComplete });
 
   @override
   _RegisterState createState() => _RegisterState();
@@ -23,6 +25,8 @@ class _RegisterState extends State<Register> {
   // states
   String email = '';
   String pass = '';
+  String name = '';
+  String surname = '';
   String error = '';
   bool isLoading = false;
 
@@ -91,6 +95,44 @@ class _RegisterState extends State<Register> {
                   },
                 ),
                 SizedBox(height: 20.0,),
+                TextFormField(
+                  decoration: textInputDecoration.copyWith(hintText: 'Name'),
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'You must enter your name !';
+                    }
+                    if (val.length < 1) {
+                      return 'Name must be at least 1 letter!';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  onChanged: (val) {
+                    setState(() {
+                      name = val;
+                    });
+                  },
+                ),
+                SizedBox(height: 20.0,),
+                TextFormField(
+                  decoration: textInputDecoration.copyWith(hintText: 'Surname'),
+                  validator: (val) {
+                    if (val == null || val.isEmpty) {
+                      return 'You must enter your surname !';
+                    }
+                    if (val.length < 1) {
+                      return 'Surname must be at least 1 letter!';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  onChanged: (val) {
+                    setState(() {
+                      surname = val;
+                    });
+                  },
+                ),
+                SizedBox(height: 20.0,),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         primary: Colors.blue[600]
@@ -98,14 +140,15 @@ class _RegisterState extends State<Register> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()){
                         setState(() => isLoading = true);
-                        dynamic result = await _auth.registerWithEmailAndPassword(email, pass);
-                        if (result == null) {
+                        AppUser? loggedInUser = await _auth.registerWithEmailAndPassword(email, pass, name, surname);
+                        if (loggedInUser == null) {
                           setState(() {
                             error = 'There was an error registering you with that email.';
                             isLoading = false;
                           });
                         }
                         else{
+                          widget.authComplete(_auth);
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setString('userEmail', email);
                           await prefs.setString('encryptedPass', pass);
