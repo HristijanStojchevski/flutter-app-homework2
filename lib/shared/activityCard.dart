@@ -4,9 +4,9 @@ import 'package:homework2/services/firebaseService.dart';
 
 class ActivityCard extends StatelessWidget {
   final Activity activity;
-  final bool isFinished;
+  final bool isEditable;
   final Function refreshPage;
-  ActivityCard({required this.activity, this.isFinished = false,required this.refreshPage});
+  ActivityCard({required this.activity,required this.refreshPage, required this.isEditable});
   final firebaseService = FirebaseService();
   @override
   Widget build(BuildContext context) {
@@ -48,7 +48,7 @@ class ActivityCard extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    child: isFinished ? null : Row(
+                    child: isEditable ? null : Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(activity.isNearby ? 'NEARBY' : '', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
@@ -80,13 +80,14 @@ class ActivityCard extends StatelessWidget {
                     Navigator.pushNamed(context, '/activity', arguments: {
                       // 'activityRef': activity.ref,
                       'activity': activity,
+                      'isEditable': isEditable
                     });
                   },
                   child: Text('FULL POST', style: TextStyle(color: Colors.white, fontSize: 16),),),
                 MaterialButton(
-                  color: isFinished ? Colors.redAccent : Colors.blue[600],
+                  color: isEditable ? Colors.redAccent : Colors.blue[600],
                   onPressed: () {
-                    if(isFinished){
+                    if(isEditable){
                       //TODO delete
                       ScaffoldMessenger.of(context).clearSnackBars();
                       ScaffoldMessenger.of(context).showSnackBar(deleteSnackBar);
@@ -95,7 +96,7 @@ class ActivityCard extends StatelessWidget {
                       //TODO enroll
                     }
                   },
-                  child: Text(isFinished ? 'DELETE' : 'SAVE', style: TextStyle(color: Colors.white, fontSize: 16),),
+                  child: Text(isEditable ? 'DELETE' : 'SAVE', style: TextStyle(color: Colors.white, fontSize: 16),),
                 ),
               ],
             )

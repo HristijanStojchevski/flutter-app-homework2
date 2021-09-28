@@ -61,7 +61,7 @@ class _PostedListState extends State<PostedList> {
         body: isLoading ? LoadingScreen() : ListView.builder(
             itemCount: postedActivities.length,
             itemBuilder: (context, index) {
-              return ActivityCard(activity: postedActivities[index], isFinished: true, refreshPage: refreshScreen);
+              return ActivityCard(activity: postedActivities[index], isEditable: true, refreshPage: refreshScreen);
             })
     );
   }

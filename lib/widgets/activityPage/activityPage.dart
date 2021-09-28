@@ -121,6 +121,7 @@ class _ActivityPageState extends State<ActivityPage> {
             padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
             height: 200,
             child: Column(children: [
+              Text(activity.category, style: TextStyle(fontSize: 20),),
               // heading + audio player
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Padding(
@@ -152,7 +153,7 @@ class _ActivityPageState extends State<ActivityPage> {
               Padding(
                 padding: EdgeInsets.fromLTRB(50, 10, 0, 0),
                 child: Row( children: [
-                  Container(width: 300, child: Text(activity.description, maxLines: 8, overflow: TextOverflow.fade, style: TextStyle(fontSize: 14, letterSpacing: 0.3),))
+                  Container(width: 300, child: Text(activity.description, maxLines: 6, overflow: TextOverflow.fade, style: TextStyle(fontSize: 14, letterSpacing: 0.3),))
                 ],),
               )
             ],),
@@ -164,7 +165,7 @@ class _ActivityPageState extends State<ActivityPage> {
             onPressed: (){
             // TODO Enroll job
             },
-            child: Text('ENROLL', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.8),),
+            child: Text('SAVE', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, letterSpacing: 0.8),),
           ) : Container(),
           // Scroll to comment section
           // Comment section scrollable list builder

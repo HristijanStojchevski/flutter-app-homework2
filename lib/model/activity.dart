@@ -41,4 +41,9 @@ class Activity {
     this.distance = activity.distance;
     this.isNearby = activity.isNearby;
   }
+
+  bool equalsMap(Activity otherActivity){
+    return this.title == otherActivity.title && this.description == otherActivity.description &&
+        this.location.latitude == otherActivity.location.latitude && this.location.longitude == otherActivity.location.longitude;
+  }
 }

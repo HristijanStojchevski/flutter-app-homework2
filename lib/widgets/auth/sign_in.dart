@@ -57,7 +57,7 @@ class _SignInState extends State<SignIn> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkUserAuth();
+    // checkUserAuth();
   }
   @override
   Widget build(BuildContext context) {
@@ -133,9 +133,9 @@ class _SignInState extends State<SignIn> {
                     }
                     else{
                       widget.authComplete(_auth);
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('userEmail', email);
-                      await prefs.setString('encryptedPass', pass);
+                      // final prefs = await SharedPreferences.getInstance();
+                      // await prefs.setString('userEmail', email);
+                      // await prefs.setString('encryptedPass', pass);
                     }
                   }
                 },

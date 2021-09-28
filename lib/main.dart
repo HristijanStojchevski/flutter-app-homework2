@@ -20,6 +20,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     // Firebase
@@ -31,8 +32,7 @@ class MyApp extends StatelessWidget {
       StreamProvider<AppUser?>.value(
         value: AuthService().authChanges,
         initialData: null
-      ),
-      StreamProvider<List<Activity>>.value(value: FirebaseService().activities, initialData: []),
+      )
     ],
     child: MaterialApp(
       initialRoute: '/home',

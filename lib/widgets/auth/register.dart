@@ -33,6 +33,7 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return isLoading ? LoadingScreen() : Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.lightBlue[200],
       appBar: AppBar(
         backgroundColor: Colors.lightBlue[600],
@@ -106,7 +107,6 @@ class _RegisterState extends State<Register> {
                     }
                     return null;
                   },
-                  obscureText: true,
                   onChanged: (val) {
                     setState(() {
                       name = val;
@@ -125,7 +125,6 @@ class _RegisterState extends State<Register> {
                     }
                     return null;
                   },
-                  obscureText: true,
                   onChanged: (val) {
                     setState(() {
                       surname = val;

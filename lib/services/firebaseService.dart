@@ -29,7 +29,7 @@ class AuthService {
       try {
         userRef.get().then((docRef) {
           if (docRef.exists) {
-            final Map<String, dynamic> docData = docRef.data() as Map<
+            final docData = docRef.data() as Map<
                 String,
                 dynamic>;
             appUser.name = docData['name'] ?? 'FirebaseError';
@@ -107,9 +107,10 @@ class AuthService {
       await _auth.signOut();
       // TODO delete token from this device
       removeDeviceToken();
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('userEmail');
-      await prefs.remove('encryptedPass');
+      appUser.isLoggedIn = false;
+      // final prefs = await SharedPreferences.getInstance();
+      // await prefs.remove('userEmail');
+      // await prefs.remove('encryptedPass');
       return;
     } catch (err) {
       print(err.toString());
@@ -137,6 +138,7 @@ class AuthService {
 
   Future upgradeUserToActivist() async {
     String uid = appUser.uid!;
+    appUser.role = Role.Activist;
     return await _userCollection.doc(uid).update({'role': Role.Activist.name});
   }
 

@@ -34,6 +34,8 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    final roleChangedSnackBar = SnackBar(content: Text('You have become an ACTIVIST!', style: TextStyle(fontSize: 18),), duration: Duration(seconds: 3),);
+
     return StreamBuilder<List<Activity>>(
       stream: FirebaseService().postedActivities,
       builder: (context, activitiesSnapshot) {
@@ -103,7 +105,10 @@ class _DashboardState extends State<Dashboard> {
                     children: [
                       Text("USER PROFILE\nimplementation", style: TextStyle(fontSize: 30, color: Colors.blueAccent[600]),),
                       SizedBox(height: 50,),
-                      MaterialButton(color: Colors.blue, onPressed: () => AuthService().upgradeUserToActivist(), child: Text('Become ACTIVIST', style: TextStyle(fontSize: 16,),),)
+                      MaterialButton(color: Colors.blue, onPressed: (){
+                        AuthService().upgradeUserToActivist();
+                        ScaffoldMessenger.of(context).showSnackBar(roleChangedSnackBar);
+                        }, child: Text('Become ACTIVIST', style: TextStyle(fontSize: 16,),),)
                     ]
                   ),
                 )

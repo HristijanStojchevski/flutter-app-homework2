@@ -37,7 +37,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final appUser = Provider.of<AppUser?>(context);
+    final appUserChanged = Provider.of<AppUser?>(context);
     final connection = Provider.of<ConnectivityResult>(context);
     if(connection == ConnectivityResult.none){
       AppUser test = AppUser();
@@ -48,8 +48,15 @@ class _WrapperState extends State<Wrapper> {
       checkConnectivity();
       return NoConnection();
     }
-    if(appUser != null) {
+    if(appUserChanged != null) {
       notificationService.init();
+      // TODO if success delete lines
+      // appUser.name = appUserChanged.name;
+      // appUser.email = appUserChanged.email;
+      // appUser.activities = appUserChanged.activities;
+      // appUser.role = appUserChanged.role;
+      // appUser.surname = appUserChanged.surname;
+      // appUser.username = appUserChanged.username;
       return Home();
     }
     else return Authenticate();
