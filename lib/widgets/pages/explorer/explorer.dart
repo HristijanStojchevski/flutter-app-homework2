@@ -85,14 +85,15 @@ class _ExplorerState extends State<Explorer> {
             ],
           ),
         ),
-        Container(
-          height: 498,
-          padding: EdgeInsets.symmetric(vertical: 10),
-          child: ListView.builder(
-            itemCount: filteredActivities.length,
-            itemBuilder: (context, index) {
-              return ActivityCard(activity: filteredActivities[index],refreshPage: () {}, isEditable: false,);
-            }),
+        Expanded(
+          child: Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: ListView.builder(
+              itemCount: filteredActivities.length,
+              itemBuilder: (context, index) {
+                return ActivityCard(activity: filteredActivities[index],refreshPage: () {}, isEditable: false,);
+              }),
+          ),
           ),
       ],
     );

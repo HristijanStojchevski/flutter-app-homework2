@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:homework2/model/activity.dart';
@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
     // Firebase
 
     return MultiProvider(providers: [
-      StreamProvider<ConnectivityResult>.value(
-          value: Connectivity().onConnectivityChanged,
-          initialData: ConnectivityResult.none),
+      // StreamProvider<ConnectivityResult>.value(
+      //     value: Connectivity().onConnectivityChanged,
+      //     initialData: ConnectivityResult.none),
       StreamProvider<AppUser?>.value(
         value: AuthService().authChanges,
         initialData: null

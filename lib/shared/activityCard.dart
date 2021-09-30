@@ -52,8 +52,8 @@ class ActivityCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(activity.isNearby ? 'NEARBY' : '', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),),
-                        SizedBox(width: 10,),
-                        Text('${activity.distance}m')
+                        SizedBox(width: 9,),
+                        Text('${activity.distance}km')
                       ],
                     ),
                   )
