@@ -1,13 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:homework2/model/activity.dart';
 import 'package:homework2/services/firebaseService.dart';
+import 'package:homework2/shared/utilities.dart';
 import 'package:location/location.dart';
+import 'package:provider/provider.dart';
 
 class MapSearch extends StatefulWidget {
-  List<Activity> activities;
-
-  MapSearch({required this.activities});
 
   @override
   _MapSearchState createState() => _MapSearchState();
@@ -19,6 +19,7 @@ class _MapSearchState extends State<MapSearch> {
     // TODO v2
     // activityLocationMarkers.remove(enrolled);
   }
+  UtilityFunctions utilities = UtilityFunctions();
   Location locationTracker = Location();
   LatLng _userLocation = LatLng(0, 0);
 
@@ -35,30 +36,77 @@ class _MapSearchState extends State<MapSearch> {
     _googleMapController.dispose();
   }
   bool firstMapInit = true;
-
+  bool firstActivInit = true;
   Set<Marker> activityLocationMarkers = <Marker>{};
 
   @override void initState(){
     // TODO: implement initState
     super.initState();
-    for(Activity activity in widget.activities){
-      // change title with id
-      Marker marker = Marker( markerId: MarkerId(activity.title),
-        infoWindow: InfoWindow(title: activity.title, snippet: 'Click here for info', onTap: () {
-          // TODO logic for activity page navigation
-          showDialog(context: context, builder: (context) {
-            return OpenActivityDialog(activity: activity,);
-          });
-        }),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-        position: LatLng(activity.location.latitude, activity.location.longitude)
-      );
-      activityLocationMarkers.add(marker);
-    }
   }
+
+  List<Activity> localActivities = [];
+
 
   @override
   Widget build(BuildContext context) {
+    final activities = Provider.of<List<Activity>>(context);
+    for(Activity activity in activities){
+      double distance = utilities.calculateDistance(GeoPoint(_userLocation.latitude, _userLocation.longitude), activity.location);
+      activity.distance = distance;
+
+      if (distance <= 20) {
+        activity.isNearby = true;
+      }
+    }
+    if(!ListEquality().equals(localActivities, activities)){
+      for(Activity activity in activities){
+        if(firstActivInit){
+          // change title with id
+          Marker marker = Marker( markerId: MarkerId(activity.title),
+              infoWindow: InfoWindow(title: activity.title, snippet: 'Click here for info', onTap: () {
+                // TODO logic for activity page navigation
+                showDialog(context: context, builder: (context) {
+                  return OpenActivityDialog(activity: activity,);
+                });
+              }),
+              icon: BitmapDescriptor.defaultMarkerWithHue(activity.isNearby ? BitmapDescriptor.hueAzure : BitmapDescriptor.hueBlue),
+              position: LatLng(activity.location.latitude, activity.location.longitude)
+          );
+          activityLocationMarkers.add(marker);
+        } else {
+          Activity oldActivity = localActivities.firstWhere((element) => element.activityId == activity.activityId);
+          if(!activity.equalsMap(oldActivity)){
+            Marker oldMarker = Marker( markerId: MarkerId(oldActivity.title),
+                infoWindow: InfoWindow(title: oldActivity.title, snippet: 'Click here for info', onTap: () {
+                  // TODO logic for activity page navigation
+                  showDialog(context: context, builder: (context) {
+                    return OpenActivityDialog(activity: oldActivity,);
+                  });
+                }),
+                icon: BitmapDescriptor.defaultMarkerWithHue(oldActivity.isNearby ? BitmapDescriptor.hueAzure : BitmapDescriptor.hueBlue),
+                position: LatLng(oldActivity.location.latitude, oldActivity.location.longitude)
+            );
+            Marker marker = Marker( markerId: MarkerId(activity.title),
+                infoWindow: InfoWindow(title: activity.title, snippet: 'Click here for info', onTap: () {
+                  // TODO logic for activity page navigation
+                  showDialog(context: context, builder: (context) {
+                    return OpenActivityDialog(activity: activity,);
+                  });
+                }),
+                icon: BitmapDescriptor.defaultMarkerWithHue(activity.isNearby ? BitmapDescriptor.hueAzure : BitmapDescriptor.hueBlue),
+                position: LatLng(activity.location.latitude, activity.location.longitude)
+            );
+            activityLocationMarkers.remove(oldMarker);
+            activityLocationMarkers.add(marker);
+          }
+
+        }
+      }
+      localActivities = activities;
+      firstActivInit = false;
+      setState(() {});
+    }
+
     return Scaffold(
       body: GoogleMap(
         myLocationButtonEnabled: false,

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-final pathToSaveAudio = 'temp_audio.aac';
+import 'package:path_provider/path_provider.dart';
+// TODO Experiment with audio src
+String pathToSaveAudio = '';
 
 class MediaService {
   FlutterSoundRecorder? _audioRecorder;
@@ -47,6 +50,8 @@ class MediaService {
     if(_isInit) return;
     _audioRecorder = FlutterSoundRecorder();
     _audioPlayer = FlutterSoundPlayer();
+    Directory docDirectory = await getApplicationDocumentsDirectory();
+    pathToSaveAudio = '${docDirectory.path}/temp_audio.aac';
     await _audioPlayer!.openAudioSession();
     _isInit = true;
   }

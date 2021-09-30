@@ -29,9 +29,10 @@ class DashActivityTile extends StatelessWidget {
                     color: Colors.lightBlue[400],
                     onPressed: (){
                       // TODO open job
+                      Activity tempActivity = Activity.from(activity);
                       Navigator.pushNamed(context, '/activity', arguments: {
-                        'activity': activity,
-                        'isEditable': !activity.enrolled
+                        'activity': tempActivity,
+                        'isEditable': true
                       });
                     },
                     child: Text('Open details'),

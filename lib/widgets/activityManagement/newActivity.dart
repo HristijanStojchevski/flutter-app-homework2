@@ -1,13 +1,15 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:homework2/model/activity.dart';
 import 'package:homework2/widgets/activityManagement/contentFormStep.dart';
 import 'package:homework2/widgets/activityManagement/mainFormStep.dart';
 
 class NewActivity extends StatefulWidget {
   final Function validate;
-
-  NewActivity({required this.validate});
+  final Function updateActivity;
+  NewActivity({required this.validate, required this.updateActivity});
 
   @override
   _NewActivityState createState() => _NewActivityState();
@@ -15,6 +17,7 @@ class NewActivity extends StatefulWidget {
 
 class _NewActivityState extends State<NewActivity> {
 
+  Activity _newActivity = Activity(title: 'title', description: 'description', location: GeoPoint(0,0), category: '', networkPhotos: [], audioRecording: '');
   int activeStepIndex = 0;
   String category = '';
   String name = '';
@@ -28,14 +31,21 @@ class _NewActivityState extends State<NewActivity> {
       this.category = category;
       this.name = name;
       this.description = description;
+      this._newActivity.title = name;
+      this._newActivity.category = category;
+      this._newActivity.description = description;
     });
     widget.validate(_formKey);
+    widget.updateActivity(_newActivity);
   }
-  void updateContent(imgSrc, audioSrc){
+  void updateContent(imgSrc, audioSrc, List<String> networkPhotos, String audioRecording){
     setState(() {
       this.imgSrc = imgSrc;
       this.audioSrc = audioSrc;
+      this._newActivity.audioSrc = audioSrc;
+      this._newActivity.photos = imgSrc;
     });
+    widget.updateActivity(_newActivity);
   }
   // global form key
   final _formKey = GlobalKey<FormState>();
@@ -51,12 +61,14 @@ class _NewActivityState extends State<NewActivity> {
         state: activeStepIndex >= 1 && _formKey.currentState!.validate() ? StepState.complete : StepState.editing,
         isActive: activeStepIndex >= 1,
         title: Text('Content'), content: Center(
-      child: ContentStep(updateParams: updateContent, audioSrc: this.audioSrc, imgSrc: this.imgSrc)
+      child: ContentStep(updateParams: updateContent, audioSrc: this.audioSrc, imgSrc: this.imgSrc, networkPhotos: [], audioRecording: '',)
     ))
   ];
 
   @override
   Widget build(BuildContext context) {
+
+    // TODO on navigation back show snack bar
     final snackBar = SnackBar(content: Text('Are you sure ? All your progress will be lost !'), action: SnackBarAction(label: 'Exit', onPressed: (){
       Navigator.pop(context);
     },),);
