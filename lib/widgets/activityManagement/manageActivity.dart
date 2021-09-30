@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectivity/connectivity.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:homework2/model/activity.dart';
 import 'package:homework2/services/firebaseService.dart';
@@ -27,20 +27,20 @@ class _ActivityManagementState extends State<ActivityManagement> {
 
   bool connected = false;
 
-  Future<void> checkConnectivity() async {
-    try {
-      final List<InternetAddress> result = await InternetAddress.lookup('google.com');
-      if( result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        setState(() => connected = true);
-        return;
-      }
-      setState(() => connected = false);
-    } catch (connErr) {
-      print('Problem with google server connection'); // TODO connect with my server
-      print(connErr.toString());
-      setState(() => connected = false);
-    }
-  }
+  // Future<void> checkConnectivity() async {
+  //   try {
+  //     final List<InternetAddress> result = await InternetAddress.lookup('google.com');
+  //     if( result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+  //       setState(() => connected = true);
+  //       return;
+  //     }
+  //     setState(() => connected = false);
+  //   } catch (connErr) {
+  //     print('Problem with google server connection'); // TODO connect with my server
+  //     print(connErr.toString());
+  //     setState(() => connected = false);
+  //   }
+  // }
 
   void validateForm(GlobalKey<FormState> validationToken){
     if (validationToken.currentState!.validate()) {
@@ -67,11 +67,11 @@ class _ActivityManagementState extends State<ActivityManagement> {
     final snackBar = SnackBar(backgroundColor: Colors.redAccent, padding: EdgeInsets.fromLTRB(90, 2, 0, 2), content: Text('You have empty required fields!', style: TextStyle(fontSize: 16,)));
     final fireErrSnack = SnackBar(backgroundColor: Colors.redAccent, padding: EdgeInsets.fromLTRB(90, 2, 0, 2), content: Text('There was a problem with saving this activity! Try again', style: TextStyle(fontSize: 16,)));
     final noInternetSnack = SnackBar(backgroundColor: Colors.redAccent, padding: EdgeInsets.fromLTRB(90, 2, 0, 2), content: Text('You have no internet! Connect then try again.', style: TextStyle(fontSize: 16,)));
-    final connection = Provider.of<ConnectivityResult>(context);
+    // final connection = Provider.of<ConnectivityResult>(context);
 
-    if(!connected){
-      checkConnectivity();
-    }
+    // if(!connected){
+    //   checkConnectivity();
+    // }
 
     return Scaffold(
       // TODO on navigation back read activity page from firebase
@@ -85,17 +85,17 @@ class _ActivityManagementState extends State<ActivityManagement> {
             onPressed: () async {
               if(isValid){
                 // TODO save images to cloud storage
-                if(connection == ConnectivityResult.none){
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(noInternetSnack);
-                  setState(() => connected = false);
-                  return;
-                }
-                if(!connected){
-                  ScaffoldMessenger.of(context).clearSnackBars();
-                  ScaffoldMessenger.of(context).showSnackBar(noInternetSnack);
-                  return;
-                }
+                // if(connection == ConnectivityResult.none){
+                //   ScaffoldMessenger.of(context).clearSnackBars();
+                //   ScaffoldMessenger.of(context).showSnackBar(noInternetSnack);
+                //   setState(() => connected = false);
+                //   return;
+                // }
+                // if(!connected){
+                //   ScaffoldMessenger.of(context).clearSnackBars();
+                //   ScaffoldMessenger.of(context).showSnackBar(noInternetSnack);
+                //   return;
+                // }
                 FirebaseService firebaseService = FirebaseService();
                 bool success = await firebaseService.saveActivity(activity, _isNew);
                 if(success) {
